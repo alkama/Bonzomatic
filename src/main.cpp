@@ -400,6 +400,7 @@ int main( int argc, const char *argv[] )
   Timer::Start();
   float fNextTick = 0.1f;
   float fLastTimeMS = Timer::GetTime();
+  float oldtime = Timer::GetTime() / 1000.0;
   while (!Renderer::WantsToQuit())
   {
     bool newShader = false;
@@ -571,10 +572,18 @@ int main( int argc, const char *argv[] )
         }
       }
 
+      char frame_ms[10];
+      snprintf(frame_ms, sizeof(frame_ms), "%.2f", (time - oldtime) * 1000.0f);
+
       char szLayout[255];
       Misc::GetKeymapName(szLayout);
-      std::string sHelp = "F2 - toggle texture preview   F5 or Ctrl-R - recompile shader   F11 - hide GUI   Current keymap: ";
-      sHelp += szLayout;
+      //std::string sHelp = "F2 - toggle texture preview   F5 or Ctrl-R - recompile shader   F11 - hide GUI   Current keymap: ";
+      //sHelp += szLayout;
+      //sHelp += "   ";
+
+      std::string sHelp = "Bonzomatic GLSL ( ";
+      sHelp += frame_ms;
+      sHelp += "ms )";
       surface->DrawTextNoClip( Scintilla::PRectangle(20,Renderer::nHeight - 20,100,Renderer::nHeight), *mShaderEditor.GetTextFont(), Renderer::nHeight - 5.0, sHelp.c_str(), (int)sHelp.length(), 0x80FFFFFF, 0x00000000);
     }
 
@@ -600,6 +609,7 @@ int main( int argc, const char *argv[] )
         mDebugOutput.SetText( "Unable to save shader! Your work will be lost when you quit!" );
       }
     }
+    oldtime = time;
   }
 
 
